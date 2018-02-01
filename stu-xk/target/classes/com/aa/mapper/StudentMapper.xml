@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aa.mapper.StudentMapper" >
+  <resultMap id="BaseResultMap" type="com.aa.pojo.Student" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userName" property="userName" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="trueName" property="trueName" jdbcType="VARCHAR" />
+    <result column="stuNo" property="stuNo" jdbcType="VARCHAR" />
+    <result column="professional" property="professional" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, userName, password, trueName, stuNo,professional
+  </sql>
+  
+  <sql id="searchBy">
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="id != null and id != ''">
+                id  = #{id,jdbcType=BIGINT}
+            </if>
+            <if test="userName !=null and userName != ''">
+                and userName = #{userName,jdbcType=VARCHAR}
+            </if>
+            <if test="password !=null and password != ''">
+                and password = #{password,jdbcType=VARCHAR}
+            </if>
+            <if test="trueName != null and trueName != ''">
+                and trueName = #{trueName,jdbcType=VARCHAR}
+            </if>
+            <if test="stuNo !=null and stuNo != ''">
+                and stuNo = #{stuNo,jdbcType=VARCHAR}
+            </if>
+            <if test="professional != null and professional != ''">
+                and professional = #{professional,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </sql>
+    
+    <insert id="save" parameterType="com.aa.pojo.Student">
+        insert into t_student(userName,password,trueName,stuNo,professional) values(#{userName,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},#{trueName,jdbcType=VARCHAR},#{stuNo,jdbcType=VARCHAR},#{professional,jdbcType=VARCHAR})
+    </insert>
+  
+  	<update id="updateSelective"  parameterType="java.util.HashMap">
+        update t_student
+          <set>
+            <if test="userName != null and userName != '' ">        
+                userName = #{userName,jdbcType=VARCHAR},                
+            </if>
+            <if test="password != null and password != '' ">        
+                password = #{password,jdbcType=VARCHAR},                
+            </if>
+            <if test="trueName != null and trueName != '' ">        
+                trueName = #{trueName,jdbcType=VARCHAR},                
+            </if>
+        </set>
+        where id = #{id ,jdbcType=BIGINT}
+    </update>
+    
+    <select id="findByPrimary" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List" />
+        from t_student
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    
+    <select id="listSelective" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_student
+        <include refid="searchBy"/>
+    </select>
+    
+    <delete id="delete" parameterType="java.lang.Long" >
+    	delete from t_student where id = #{id ,jdbcType=BIGINT}
+    </delete>
+</mapper>
